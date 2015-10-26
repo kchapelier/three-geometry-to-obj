@@ -3,7 +3,7 @@
 var toObj = require('array-to-wavefront-obj'),
     commentString = '# Converted from a Three.Geometry with three-geometry-to-obj\n';
 
-module.exports = function (geometry, options) {
+module.exports = function threeGeometryToObj (geometry, options) {
 
     options = options || {};
 

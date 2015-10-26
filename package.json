@@ -1,11 +1,32 @@
 {
   "name": "three-geometry-to-obj",
   "version": "0.0.1",
-  "description": "",
+  "description": "Takes a THREE.Geometry and returns an OBJ string.",
+  "homepage": "https://github.com/kchapelier/three-geometry-to-obj",
   "main": "index.js",
+  "engines": {
+    "node": ">= 0.12.0"
+  },
+  "keywords": [
+    "three",
+    "three.js",
+    "wavefront",
+    "obj"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Kevin Chapelier",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kchapelier/three-geometry-to-obj.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kchapelier/three-geometry-to-obj/issues"
+  },
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "array-to-wavefront-obj": "^0.1.0"
+  }
 }
