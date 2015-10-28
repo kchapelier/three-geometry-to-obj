@@ -9,11 +9,11 @@ var toObj = require('array-to-wavefront-obj'),
 var treatVertex = function treatVertex (vertex, vertexMap, vertexArray, vertexIndices) {
     var key = vertex.x + ',' + vertex.y + ',' + vertex.z;
 
-    if (vertexMap.hasOwnProperty(key)) {
+    if (!vertexMap.hasOwnProperty(key)) {
         vertexArray.push(vertex.x);
         vertexArray.push(vertex.y);
         vertexArray.push(vertex.z);
-        vertexMap[key] = vertexArray.length / 3;
+        vertexMap[key] = Math.round((vertexArray.length / 3) - 1);
     }
 
     vertexIndices.push(vertexMap[key]);
@@ -22,11 +22,11 @@ var treatVertex = function treatVertex (vertex, vertexMap, vertexArray, vertexIn
 var treatNormal = function treatNormal (normal, normalMap, normalArray, normalIndices) {
     var key = normal.x + ',' + normal.y + ',' + normal.z;
 
-    if (normalMap.hasOwnProperty(key)) {
+    if (!normalMap.hasOwnProperty(key)) {
         normalArray.push(normal.x);
         normalArray.push(normal.y);
         normalArray.push(normal.z);
-        normalMap[key] = normalArray.length / 3;
+        normalMap[key] = Math.round((normalArray.length / 3) - 1);
     }
 
     normalIndices.push(normalMap[key]);
