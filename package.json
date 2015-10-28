@@ -27,6 +27,6 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "array-to-wavefront-obj": "^0.1.0"
+    "array-to-wavefront-obj": "^0.1.1"
   }
 }
