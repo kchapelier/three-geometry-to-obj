@@ -6,6 +6,18 @@ var toObj = require('array-to-wavefront-obj'),
 //FIXME treatVertex and treatNormal are currently the same
 //TODO is it worth it to include a polyfill of es6 Map for vertexMap and normalMap
 
+var treatUv = function treatUv (uv, uvMap, uvArray, uvIndices) {
+    var key = uv.x + ',' + uv.y;
+
+    if (!uvMap.hasOwnProperty(key)) {
+        uvArray.push(uv.x);
+        uvArray.push(uv.y);
+        uvMap[key] = Math.round((uvArray.length / 2) - 1);
+    }
+
+    uvIndices.push(uvMap[key]);
+};
+
 var treatVertex = function treatVertex (vertex, vertexMap, vertexArray, vertexIndices) {
     var key = vertex.x + ',' + vertex.y + ',' + vertex.z;
 
@@ -38,10 +50,13 @@ module.exports = function threeGeometryToObj (geometry, options) {
 
     var vertexMap = {},
         normalMap = {},
+        textureMap = {},
         vertices = [],
         normals = [],
+        textures = [],
         vertexIndices = [],
-        normalIndices = [];
+        normalIndices = [],
+        textureIndices = [];
 
     var face;
 
@@ -63,5 +78,13 @@ module.exports = function threeGeometryToObj (geometry, options) {
         }
     }
 
-    return commentString + toObj(vertices, normals, null, vertexIndices, normalIndices);
+    if (geometry.faceVertexUvs.length && geometry.faceVertexUvs[0].length === geometry.faces.length) {
+        for (var i = 0; i < geometry.faceVertexUvs[0].length; i++) {
+            treatUv(geometry.faceVertexUvs[0][i][0], textureMap, textures, textureIndices);
+            treatUv(geometry.faceVertexUvs[0][i][1], textureMap, textures, textureIndices);
+            treatUv(geometry.faceVertexUvs[0][i][2], textureMap, textures, textureIndices);
+        }
+    }
+
+    return commentString + toObj(vertices, normals, textures, vertexIndices, normalIndices, textureIndices);
 };
