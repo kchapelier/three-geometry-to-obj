@@ -23,7 +23,7 @@ console.log(threeGeometryToObj(geometry, { normalSource: 'face' }));
 ## API
 
 ```js
-threeGeometryToObj(geometry, options)
+threeGeometryToObj(geometry, options);
 ```
 
 ### Arguments
@@ -34,14 +34,19 @@ threeGeometryToObj(geometry, options)
 
 ## Changelog
 
+### 0.0.2 (2015.10.29) :
+
+* Takes advantage of the different indices in `array-to-wavefront-obj` to reduce the string length.
+* Now retrieve the uv values.
+
 ### 0.0.1 (2015.10.26) :
 
 * First implementation.
 
 ## Roadmap
 
-Retrieve the uv values in the OBJ string.
-A better implementation.
+* Tests
+* Supports for THREE.BufferGeometry and/or THREE.DirectGeometry ?
 
 ## License
 
