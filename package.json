@@ -1,7 +1,7 @@
 {
   "name": "three-geometry-to-obj",
-  "version": "0.0.2",
-  "description": "Takes a THREE.Geometry and returns an OBJ string.",
+  "version": "0.1.0",
+  "description": "Takes a THREE.Geometry or a THREE.BufferGeometry and returns an OBJ string.",
   "homepage": "https://github.com/kchapelier/three-geometry-to-obj",
   "main": "index.js",
   "engines": {

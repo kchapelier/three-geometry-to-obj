@@ -1,6 +1,6 @@
 # three-geometry-to-obj
 
-Takes a THREE.Geometry and returns an OBJ string.
+Takes a THREE.Geometry or a THREE.BufferGeometry and returns an OBJ string.
 
 Mostly a convenience wrapper around [array-to-wavefront-obj](https://www.npmjs.com/package/array-to-wavefront-obj).
 
@@ -28,11 +28,16 @@ threeGeometryToObj(geometry, options);
 
 ### Arguments
 
-* geometry : an instance of THREE.Geometry.
+* geometry : an instance of THREE.Geometry or THREE.BufferGeometry (non-indexed only currently).
 * options : an optional object.
-  * normalSource : Where to retrieve the normal values, either `face` or `vertex`, defaults to `vertex`
+  * normalSource : On THREE.Geometry, where to retrieve the normal values, either `face` or `vertex`, defaults to `vertex`
 
 ## Changelog
+
+### 0.1.0 (2015.11.03) :
+
+* Add support for non-indexed THREE.BufferGeometry.
+* Retrieve the name of the geometry in the comment string.
 
 ### 0.0.2 (2015.10.29) :
 
@@ -46,7 +51,7 @@ threeGeometryToObj(geometry, options);
 ## Roadmap
 
 * Tests
-* Supports for THREE.BufferGeometry and/or THREE.DirectGeometry ?
+* Supports for indexed THREE.BufferGeometry
 
 ## License
 
