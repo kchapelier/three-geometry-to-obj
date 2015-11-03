@@ -1,14 +1,12 @@
 "use strict";
 
-var toObj = require('array-to-wavefront-obj'),
-    commentString = '# Converted from a Three.Geometry with three-geometry-to-obj\n';
+var toObj = require('array-to-wavefront-obj');
 
 var treatVector2 = function treatVector2 (vector2, map, array, indices) {
     var key = vector2.x + ',' + vector2.y;
 
     if (!map.hasOwnProperty(key)) {
-        array.push(vector2.x);
-        array.push(vector2.y);
+        array.push(vector2.x, vector2.y);
         map[key] = Math.round((array.length / 2) - 1);
     }
 
@@ -19,29 +17,51 @@ var treatVector3 = function treatVector3 (vector3, map, array, indices) {
     var key = vector3.x + ',' + vector3.y + ',' + vector3.z;
 
     if (!map.hasOwnProperty(key)) {
-        array.push(vector3.x);
-        array.push(vector3.y);
-        array.push(vector3.z);
+        array.push(vector3.x, vector3.y, vector3.z);
         map[key] = Math.round((array.length / 3) - 1);
     }
 
     indices.push(map[key]);
 };
 
-module.exports = function threeGeometryToObj (geometry, options) {
+var treat2Values = function treat2Values (x, y, map, array, indices) {
+    var key = x + ',' + y;
+
+    if (!map.hasOwnProperty(key)) {
+        array.push(x, y);
+        map[key] = Math.round((array.length / 2) - 1);
+    }
+
+    indices.push(map[key]);
+};
+
+var treat3Values = function treat3Values (x, y, z, map, array, indices) {
+    var key = x + ',' + y + ',' + z;
+
+    if (!map.hasOwnProperty(key)) {
+        array.push(x, y, z);
+        map[key] = Math.round((array.length / 3) - 1);
+    }
+
+    indices.push(map[key]);
+};
+
+var generateCommentString = function generateCommentString (geometry) {
+    var idStr = 'THREE.' + geometry.type;
+
+    if (geometry.name) {
+        idStr += ' named "' + geometry.name + '"'
+    }
+
+    return '# Converted from a ' + idStr + ' with three-geometry-to-obj\n';
+};
+
+var unfoldThreeGeometry = function unfoldThreeGeometry (geometry, options, vertices, normals, textures, vertexIndices, normalIndices, textureIndices) {
     var vertexMap = {},
         normalMap = {},
         textureMap = {},
-        vertices = [],
-        normals = [],
-        textures = [],
-        vertexIndices = [],
-        normalIndices = [],
-        textureIndices = [],
         face,
         i;
-
-    options = options || {};
 
     for (i = 0; i < geometry.faces.length; i++) {
         face = geometry.faces[i];
@@ -68,6 +88,44 @@ module.exports = function threeGeometryToObj (geometry, options) {
             treatVector2(geometry.faceVertexUvs[0][i][2], textureMap, textures, textureIndices);
         }
     }
+};
 
-    return commentString + toObj(vertices, normals, textures, vertexIndices, normalIndices, textureIndices);
+var unfoldThreeBufferGeometry = function unfoldThreeBufferGeometry (geometry, options, vertices, normals, textures, vertexIndices, normalIndices, textureIndices) {
+    var vertexMap = {},
+        normalMap = {},
+        textureMap = {},
+        positionsAttr = geometry.attributes.position,
+        normalsAttr = geometry.attributes.normal,
+        uvsAttr = geometry.attributes.uv,
+        i;
+
+    for (i = 0; i < positionsAttr.count; i++) {
+        treat3Values(positionsAttr.array[i * 3], positionsAttr.array[i * 3 + 1], positionsAttr.array[i * 3 + 2], vertexMap, vertices, vertexIndices);
+        treat3Values(normalsAttr.array[i * 3], normalsAttr.array[i * 3 + 1], normalsAttr.array[i * 3 + 2], normalMap, normals, normalIndices);
+    }
+
+    if (uvsAttr && uvsAttr.count === positionsAttr.count) {
+        for (i = 0; i < uvsAttr.count; i++) {
+            treat2Values(uvsAttr.array[i * 2], uvsAttr.array[i * 2 + 1], textureMap, textures, textureIndices);
+        }
+    }
+};
+
+module.exports = function threeGeometryToObj (geometry, options) {
+    var vertices = [],
+        normals = [],
+        textures = [],
+        vertexIndices = [],
+        normalIndices = [],
+        textureIndices = [];
+
+    options = options || {};
+
+    if (geometry.type === 'BufferGeometry') {
+        unfoldThreeBufferGeometry(geometry, options, vertices, normals, textures, vertexIndices, normalIndices, textureIndices)
+    } else {
+        unfoldThreeGeometry(geometry, options, vertices, normals, textures, vertexIndices, normalIndices, textureIndices);
+    }
+
+    return generateCommentString(geometry) + toObj(vertices, normals, textures, vertexIndices, normalIndices, textureIndices);
 };
